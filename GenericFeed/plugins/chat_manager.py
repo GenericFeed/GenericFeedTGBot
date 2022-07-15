@@ -1,9 +1,9 @@
 """
-Commands for the chat manager.
+Commands for managing chats
 """
 
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
 from GenericFeed.plugins.db import chat
 
@@ -19,6 +19,7 @@ async def add_chat(client: Client, message: Message):
         return
     chat_id = int(args[1])
     chat.add_chat(chat_id)
+    await message.reply_text("Chat added.")
 
 
 @Client.on_message(filters.command("remove_chat"))
@@ -32,12 +33,12 @@ async def remove_chat(client: Client, message: Message):
         return
 
     chat_list = [chat_data['chat_id'] for chat_data in chat_list]
-    buttons = [InlineKeyboardButton(chat_id, callback_data=f"rem_chat|{chat}") for chat_id in chat_list]
+    buttons = [InlineKeyboardButton(chat_id['chat_id'], callback_data=f"rem_chat|{chat_id['chat_id']}") for chat_id in chat_list]
     markup = InlineKeyboardMarkup(buttons)
     await message.reply_text("Select a chat to remove:", reply_markup=markup)
     
 @Client.on_callback_query(filters.regex("rem_chat"))
-async def remove_chat(client: Client, callback_query: Message):
+async def remove_chat(client: Client, callback_query: CallbackQuery):
     """
     Remove a chat from the database.
     """

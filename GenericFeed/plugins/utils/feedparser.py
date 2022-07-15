@@ -3,6 +3,7 @@ import xmltodict
 
 
 async def get_feed_in_dict(url: str):
+    print(url)
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             xml = await response.text()
@@ -12,13 +13,13 @@ async def get_feed_in_dict(url: str):
 def get_info_by_string_path(data: dict, path: str):
     split_path = path.split(".")
     for part in split_path:
-        if not isinstance(data, dict):
+        if not isinstance(data, (dict)):
             continue
         data = data[part]
     return data
 
 
-async def get_feed_info(feed_data: dict):
+async def get_last_post(feed_data: dict):
     feed_url = feed_data["url"]
     feed_path = feed_data["data_path"]
     info_paths = feed_data["feed_paths"]

@@ -2,6 +2,7 @@
 Config file
 """
 import os
+from typing import Union
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -16,11 +17,15 @@ BOT_TOKEN: str = None or os.getenv('BOT_TOKEN')
 # Get MONGODB_URL from https://www.mongodb.com/atlas;
 MONGODB_URL: str = None or os.getenv('MONGODB_URL')
 
-NEWS_FORMAT = """
+NEWS_FORMAT: str = """
 Name: {title}
 URL: {link} | Published: {pubDate}
 Description: {description}
 ID: {guid}
 """
 
-LOOP_TIME = 10 # in seconds
+SUDOERS: list = [
+    2138770172,
+]
+
+LOOP_TIME: Union[int, float] = 10 # in seconds

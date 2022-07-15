@@ -4,6 +4,8 @@ GenericFeed main class
 
 # TODO: Make function to send the news with formatting.
 import asyncio
+from email import message
+import logging
 from pyrogram import Client
 from GenericFeed import config
 
@@ -18,21 +20,27 @@ async def loopFeed(client: Client) -> None:
         feed_list = feed.get_feeds()
         for feed_data in feed_list:
             feed_url = feed_data['url']
-            feed_name = feed_data['name']
-            feed_data_path = feed_data['data_path']
-            feed_paths = feed_data['feed_paths']
             last_guid = feed_data['last_guid']
-            feed_data = feedparser.get_feed_in_dict(feed_url)
-            last_post = feedparser.get_info_by_string_path(feed_data, feed_data_path)[0]
-            post_info = {}
-            for path in feed_paths.keys():
-                post_info[path] = feedparser.get_info_by_string_path(last_post, feed_paths[path])
+            post_info = await feedparser.get_last_post(feed_data)
             if last_guid == post_info['guid']:
                 continue
             chat_list = chat.get_chats()
             for chat_data in chat_list:
                 chat_id = chat_data['chat_id']
-                await client.send_message(chat_id, config.NEWS_FORMAT.format(**post_info))
+                message_text = config.NEWS_FORMAT.format(**post_info)
+                if feed_data['feed_paths']['thumbnail'] is not None:
+                    print(post_info['thumbnail'])
+                    try:
+                        await client.send_photo(
+                            chat_id,
+                            post_info['thumbnail'],
+                            caption=message_text
+                        )
+                    except Exception as e:
+                        logging.error(f"{e}")
+                        continue
+                else:
+                    await client.send_(chat_id, config.NEWS_FORMAT.format(**post_info))
             feed.change_last_guid(feed_url, post_info['guid'])
         await asyncio.sleep(config.LOOP_TIME)
 
@@ -47,3 +55,12 @@ class GenericFeedBot(Client):
             bot_token=config.BOT_TOKEN,
             plugins={'root': 'GenericFeed.plugins'}
         )
+
+    async def start(self):
+        await super().start()
+        while True:    
+            # try:
+            await loopFeed(self)
+            # except Exception as e:
+            #     await asyncio.sleep(config.LOOP_TIME)
+                
