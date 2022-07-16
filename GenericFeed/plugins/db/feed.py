@@ -9,13 +9,13 @@ from GenericFeed.plugins.utils.exceptions import FeedAlreadyExists
 DEFAULT_FEED_INFO = {
     "name": None,
     "url": None,
-    "data_path": "rss.channel.item",
+    "data_path": "entries",
     "feed_paths": {
-        "title": "title.#text",
-        "link": "link.@href",
-        "description": "description.#text",
+        "title": "title",
+        "link": "link",
+        "summary": "summary",
         "guid": "id",
-        "pubDate": "pubDate",
+        "pubDate": "published",
         "thumbnail": None,
     },
     "last_guid": None

@@ -18,10 +18,11 @@ BOT_TOKEN: str = None or os.getenv('BOT_TOKEN')
 MONGODB_URL: str = None or os.getenv('MONGODB_URL')
 
 NEWS_FORMAT: str = """
-Name: {title}
-URL: {link} | Published: {pubDate}
-Description: {description}
-ID: {guid}
+Name: [{title}]({link})
+{splitter}
+Description: {summary}.
+
+Published: {pubDate}
 """
 
 SUDOERS: list = [

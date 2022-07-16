@@ -1,6 +1,7 @@
 # useless files
 *__pycache__
 *.session*
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
